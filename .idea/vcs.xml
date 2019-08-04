@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/Animation" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/CCAvenue" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Kclothing" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/MQ_Latest" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/android-inapp-billing-v3" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/android-mvp-architecture" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/trs_new/TRSFORMS" vcs="Git" />
+  </component>
+</project>
