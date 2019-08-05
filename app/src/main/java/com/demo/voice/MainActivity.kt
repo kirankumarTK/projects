@@ -20,48 +20,13 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity(), RecognitionListener {
-    override fun onReadyForSpeech(p0: Bundle?) {
-        Log.d("Tag", "onReadyForSpeech")
-    }
 
-    override fun onRmsChanged(p0: Float) {
-        Log.d("Tag", "onRmsChanged")
-    }
-
-    override fun onBufferReceived(p0: ByteArray?) {
-        Log.d("Tag", "onBufferReceived")
-    }
-
-    override fun onPartialResults(p0: Bundle?) {
-        Log.d("Tag", "onPartialResults")
-    }
-
-    override fun onEvent(p0: Int, p1: Bundle?) {
-        Log.d("Tag", "onEvent")
-    }
-
-    override fun onBeginningOfSpeech() {
-        Log.d("Tag", "onReadyForSpeech")
-    }
-
-    override fun onEndOfSpeech() {
-        Log.d("Tag", "onEndOfSpeech")
-    }
-
-    override fun onError(p0: Int) {
-        Log.d("Tag", "onError")
-    }
-
-    override fun onResults(bundle: Bundle?) {
-
-        val matches = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-        if (matches != null)
-            emailAddress.setText(matches.get(0));
-
-    }
-
+    val mSpeechRecognizerIntent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
     var t1: TextToSpeech? = null
     val mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+    var currentField: String = ""
+    var handler: Handler = Handler()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -70,38 +35,42 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
     }
 
     private fun setSpeech() {
-        val mSpeechRecognizerIntent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         mSpeechRecognizerIntent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        );
+        )
         mSpeechRecognizerIntent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE,
             Locale.getDefault()
-        );
+        )
         mSpeechRecognizer.setRecognitionListener(this)
 
         t1 = TextToSpeech(applicationContext, TextToSpeech.OnInitListener { status ->
             if (status != TextToSpeech.ERROR) {
-                t1?.setLanguage(Locale.ENGLISH)
+                t1?.language = Locale.ENGLISH
+
+                val voiceList = t1?.voices
+                if (voiceList != null) {
+                    for (voice in voiceList) {
+                        if (voice.name.equals("ta", ignoreCase = true)) {
+                            t1?.voice = voice
+                        }
+                    }
+                }
+
                 t1?.speak(
-                    "The safer, easier way to pay in India and around the world",
+                    "இந்தியா மற்றும் உலகளவில் எளிதாக மற்றும் பாதுகாப்பாக பரிவர்த்தனை செய்ய  " +
+                            "        தங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்",
                     TextToSpeech.QUEUE_FLUSH,
                     null,
                     null
                 )
-                var handler: Handler = Handler()
+                t1?.isSpeaking
                 handler.postDelayed({
-
-                    t1?.speak(
-                        "Enter User Name",
-                        TextToSpeech.QUEUE_FLUSH,
-                        null,
-                        null
-                    )
+                    currentField = "Email"
                     mSpeechRecognizer.startListening(mSpeechRecognizerIntent)
                     emailAddress.setText("")
-                }, 5000)
+                }, 7000)
 
             }
         })
@@ -132,4 +101,62 @@ class MainActivity : AppCompatActivity(), RecognitionListener {
         }
         super.onPause()
     }
+
+    override fun onReadyForSpeech(p0: Bundle?) {
+        Log.d("Tag", "onReadyForSpeech")
+    }
+
+    override fun onRmsChanged(p0: Float) {
+        Log.d("Tag", "onRmsChanged")
+    }
+
+    override fun onBufferReceived(p0: ByteArray?) {
+        Log.d("Tag", "onBufferReceived")
+    }
+
+    override fun onPartialResults(p0: Bundle?) {
+        Log.d("Tag", "onPartialResults")
+    }
+
+    override fun onEvent(p0: Int, p1: Bundle?) {
+        Log.d("Tag", "onEvent")
+    }
+
+    override fun onBeginningOfSpeech() {
+        Log.d("Tag", "onReadyForSpeech")
+    }
+
+    override fun onEndOfSpeech() {
+        Log.d("Tag", "onEndOfSpeech")
+    }
+
+    override fun onError(p0: Int) {
+        Log.d("Tag", "onError")
+        mSpeechRecognizer.startListening(mSpeechRecognizerIntent)
+    }
+
+    override fun onResults(bundle: Bundle?) {
+
+        val matches = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+        if (matches != null) {
+            if (currentField.equals("Email")) {
+                emailAddress.setText(matches.get(0))
+                currentField = "password"
+                t1?.speak(
+                    "கடவுச்சொல்லை உள்ளிடவும்",
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    null
+                )
+                handler.postDelayed({
+
+                    mSpeechRecognizer.startListening(mSpeechRecognizerIntent)
+                }, 1000)
+            } else if (currentField.equals("password")) {
+                password.setText(matches.get(0))
+            }
+        }
+    }
+
+
 }

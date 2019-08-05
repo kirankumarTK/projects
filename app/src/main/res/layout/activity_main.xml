@@ -23,9 +23,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:text="The safer, easier way to pay in India and around the world"
+            android:text="இந்தியா மற்றும் உலகளவில் எளிதாக மற்றும் பாதுகாப்பாக பரிவர்த்தனை செய்ய"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textStyle="bold" />
+            <!--android:text="The safer, easier way to pay in India and around the world"-->
+
 
 
     <EditText
@@ -33,12 +35,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:hint="Email address" />
+            android:hint="தங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்" />
 
     <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             android:layout_marginBottom="10dp"
             android:hint="Create Your Password" />
 
